@@ -8,27 +8,17 @@ on:
 
 jobs:
   analyze-and-test:
-    name: Analyze & Test (PS ${{ matrix.pwsh }})
+    name: Analyze & Test (PowerShell 7)
     runs-on: windows-latest
-    strategy:
-      fail-fast: false
-      matrix:
-        pwsh: ['7.4', '7.2']
-
     steps:
       - name: Checkout
         uses: actions/checkout@v4
-
-      - name: Setup PowerShell ${{ matrix.pwsh }}
-        uses: actions/setup-powershell@v1
-        with:
-          pwsh-version: ${{ matrix.pwsh }}
 
       - name: Cache PowerShell modules
         uses: actions/cache@v4
         with:
           path: ~/.local/share/powershell/Modules
-          key: pwsh-modules-${{ runner.os }}-${{ matrix.pwsh }}-${{ hashFiles('PSScriptAnalyzerSettings.psd1') }}
+          key: pwsh-modules-${{ runner.os }}-${{ hashFiles('PSScriptAnalyzerSettings.psd1') }}
 
       - name: Install PSScriptAnalyzer
         shell: pwsh
@@ -73,7 +63,7 @@ jobs:
 
       - name: Upload coverage
         uses: codecov/codecov-action@v4
-        if: matrix.pwsh == '7.4' && always()
+        if: always()
         with:
           files: coverage.xml
           fail_ci_if_error: false

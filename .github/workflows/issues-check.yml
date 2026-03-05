@@ -64,4 +64,4 @@ jobs:
           echo '${{ steps.issues.outputs.report }}' >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
           echo "### Issues sem atualização em 30+ dias: ${{ steps.stale.outputs.count || '0' }}" >> $GITHUB_STEP_SUMMARY
-          echo '${{ steps.stale.outputs.report || "—" }}' >> $GITHUB_STEP_SUMMARY
+          echo '${{ steps.stale.outputs.report }}' >> $GITHUB_STEP_SUMMARY

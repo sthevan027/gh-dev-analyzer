@@ -4,7 +4,7 @@ CLI que analisa um perfil do GitHub e gera um relatório HTML detalhado.
 
 ## Arquitetura do projeto
 
-```
+```text
 gh-dev-analyzer
 │
 ├─ scripts
@@ -71,7 +71,7 @@ gh-dev-analyzer
 
 | Workflow | Gatilho | Descrição |
 |----------|---------|-----------|
-| **CI** | push/PR em main/master | Matrix PowerShell 7.4 e 7.2; PSScriptAnalyzer; Pester com coverage; smoke test; upload para Codecov |
+| **CI** | push/PR em main/master | PSScriptAnalyzer; Pester com coverage; smoke test; upload para Codecov |
 | **Release** | push de tag `v*` | Cria GitHub Release com conteúdo do CHANGELOG |
 | **CodeQL** | push/PR + semanal | Análise de segurança |
 | **PR Validation** | PR que altera src/ ou scripts/ | Verifica se CHANGELOG foi atualizado |
@@ -105,6 +105,6 @@ powershell scripts/analyze-github.ps1 -Username octocat -OutputPath report.html
 
 Sem `-OutputPath`, o relatório é salvo em `reports/` com o padrão **username + data**:
 
-```
+```text
 reports/octocat-2026-03-05.html
 ```
