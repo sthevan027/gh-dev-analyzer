@@ -23,11 +23,18 @@ gh-dev-analyzer
 ├─ src
 │  └─ analyzer.ps1          # Módulo de análise (lógica principal)
 │
+├─ tests
+│  └─ analyzer.Tests.ps1    # Testes Pester
 ├─ reports                  # Relatórios HTML gerados (padrão)
 │  └─ {username}-{data}.html
 │
 ├─ .github
 │  ├─ ISSUE_TEMPLATE/       # Templates para issues
+│  │  ├─ bug_report.md
+│  │  ├─ feature_request.md
+│  │  └─ config.yml
+│  ├─ workflows/
+│  │  └─ ci.yml            # CI: PSScriptAnalyzer, Pester, smoke test
 │  ├─ PULL_REQUEST_TEMPLATE.md
 │  └─ FUNDING.yml
 ├─ README.md

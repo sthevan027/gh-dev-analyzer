@@ -21,6 +21,17 @@ Consulte o [README.md](README.md) para a arquitetura completa.
 - Documentação: edite os arquivos em `docs/`
 - Exemplos: adicione em `examples/`
 
+### Testes locais
+
+Requer **Pester 5** e **PowerShell 7**:
+
+```powershell
+Install-Module -Name Pester -Force -Scope CurrentUser -AllowClobber
+Install-Module -Name PSScriptAnalyzer -Force -Scope CurrentUser -AllowClobber
+Invoke-Pester -Path ./tests -PassThru
+Invoke-ScriptAnalyzer -Path ./src -Recurse
+```
+
 ## Reportar bugs
 
 Abra uma issue descrevendo o problema, ambiente e passos para reproduzir.
