@@ -1,0 +1,21 @@
+# Relatórios gerados
+*.report.md
+reports/
+
+# PowerShell
+*.ps1~
+.psmodule/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
