@@ -2,6 +2,9 @@
 *.report.md
 reports/
 
+# Temp do analyzer
+.gh-analyzer-temp/
+
 # PowerShell
 *.ps1~
 .psmodule/

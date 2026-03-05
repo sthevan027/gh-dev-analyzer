@@ -1,5 +1,5 @@
 # GH Dev Analyzer - Script principal
-# Analisa perfil do GitHub e gera relatório
+# Analisa perfil do GitHub e gera relatório HTML
 
 param(
     [string]$Username = "",
@@ -10,12 +10,9 @@ $scriptDir = Split-Path -Parent $MyInvocation.MyCommand.Path
 $rootDir = Split-Path -Parent $scriptDir
 . "$rootDir\src\analyzer.ps1"
 
-if (-not $Username) {
-    $Username = gh api user -q .login
-    if (-not $Username) {
-        Write-Error "Não foi possível obter o usuário. Passe -Username ou faça login com 'gh auth login'"
-        exit 1
-    }
+try {
+    Invoke-Analyzer -Username $Username -OutputPath $OutputPath
+} catch {
+    Write-Host $_.Exception.Message -ForegroundColor Red
+    exit 1
 }
-
-Invoke-Analyzer -Username $Username -OutputPath $OutputPath
