@@ -55,7 +55,13 @@ powershell scripts/analyze-github.ps1
 powershell scripts/analyze-github.ps1 -Username octocat
 
 # Salvar em caminho específico
-powershell scripts/analyze-github.ps1 -Username octocat -OutputPath C:\relatorios\octocat.html
+powershell scripts/analyze-github.ps1 -Username octocat -OutputPath report.html
 ```
 
-O relatório HTML usa o nome `{username}-{yyyy-MM-dd}.html` por padrão na pasta `reports/`.
+### Nome automático do arquivo
+
+Sem `-OutputPath`, o relatório é salvo em `reports/` com o padrão **username + data**:
+
+```
+reports/octocat-2026-03-05.html
+```

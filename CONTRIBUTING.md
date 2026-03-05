@@ -28,3 +28,10 @@ Abra uma issue descrevendo o problema, ambiente e passos para reproduzir.
 ## Sugerir features
 
 Issues com a tag `enhancement` são bem-vindas. Descreva o caso de uso e o comportamento esperado.
+
+## Roadmap
+
+- ✅ Relatório HTML
+- Developer score (algoritmo de pontuação)
+- Integração GraphQL API
+- Dashboard web
