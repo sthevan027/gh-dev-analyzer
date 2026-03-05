@@ -1,0 +1,30 @@
+name: PR Validation
+
+on:
+  pull_request:
+    branches: [main, master]
+    paths:
+      - 'src/**'
+      - 'scripts/**'
+      - 'CHANGELOG.md'
+
+jobs:
+  changelog:
+    name: CHANGELOG Check
+    runs-on: ubuntu-latest
+    if: github.event.pull_request.head.repo.fork == false
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Check CHANGELOG updated
+        run: |
+          if git diff --name-only ${{ github.event.pull_request.base.sha }} ${{ github.event.pull_request.head.sha }} | grep -q '^src/\|^scripts/'; then
+            if ! git diff --name-only ${{ github.event.pull_request.base.sha }} ${{ github.event.pull_request.head.sha }} | grep -q '^CHANGELOG.md'; then
+              echo "::error::Alterações em src/ ou scripts/ requerem atualização do CHANGELOG.md"
+              exit 1
+            fi
+          fi
+          echo "CHANGELOG: OK"

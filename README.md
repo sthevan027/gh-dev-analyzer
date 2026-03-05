@@ -34,7 +34,15 @@ gh-dev-analyzer
 │  │  ├─ feature_request.md
 │  │  └─ config.yml
 │  ├─ workflows/
-│  │  └─ ci.yml            # CI: PSScriptAnalyzer, Pester, smoke test
+│  │  ├─ ci.yml              # CI: PSScriptAnalyzer, Pester, smoke test, coverage
+│  │  ├─ release.yml         # Release automático em tags v*
+│  │  ├─ codeql.yml          # Análise de segurança
+│  │  ├─ pr-validation.yml   # Validação de CHANGELOG em PRs
+│  │  ├─ docs.yml            # Lint de Markdown
+│  │  ├─ scheduled.yml       # Smoke test agendado (diário)
+│  │  ├─ issues-check.yml    # Relatório de issues abertas
+│  │  └─ ci-failure-issue.yml # Cria issue quando o CI falha
+│  ├─ dependabot.yml         # Atualização automática de GitHub Actions
 │  ├─ PULL_REQUEST_TEMPLATE.md
 │  └─ FUNDING.yml
 ├─ README.md
@@ -58,6 +66,21 @@ gh-dev-analyzer
 
 - [Guia de início rápido](docs/GETTING_STARTED.md) — instalação e primeiro uso
 - [Métricas](docs/metrics.md) — documentação das métricas coletadas
+
+## CI/CD
+
+| Workflow | Gatilho | Descrição |
+|----------|---------|-----------|
+| **CI** | push/PR em main/master | Matrix PowerShell 7.4 e 7.2; PSScriptAnalyzer; Pester com coverage; smoke test; upload para Codecov |
+| **Release** | push de tag `v*` | Cria GitHub Release com conteúdo do CHANGELOG |
+| **CodeQL** | push/PR + semanal | Análise de segurança |
+| **PR Validation** | PR que altera src/ ou scripts/ | Verifica se CHANGELOG foi atualizado |
+| **Docs** | push/PR em docs/ ou *.md | Lint de Markdown |
+| **Scheduled** | diário (12h) + manual | Smoke test da API do GitHub |
+| **Issues Check** | seg–sex 8h + manual | Relatório de issues abertas e antigas (30+ dias sem atualização) |
+| **CI Failure → Issue** | quando CI falha | Cria issue automaticamente para rastrear a correção |
+
+O **Dependabot** atualiza as GitHub Actions semanalmente (segundas).
 
 ## Requisitos
 

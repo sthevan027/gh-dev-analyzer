@@ -1,0 +1,67 @@
+name: Issues Verification
+
+on:
+  schedule:
+    - cron: '0 8 * * 1-5'
+  workflow_dispatch:
+
+jobs:
+  report:
+    name: Report Open Issues
+    runs-on: ubuntu-latest
+    permissions:
+      issues: read
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Get open issues
+        id: issues
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const { data: issues } = await github.rest.issues.listForRepo({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              state: 'open',
+              sort: 'updated',
+              direction: 'desc'
+            });
+            const withoutPr = issues.filter(i => !i.pull_request);
+            const report = withoutPr.map(i => `- #${i.number} [${i.title}](${i.html_url}) - ${i.state}`).join('\n');
+            core.setOutput('count', withoutPr.length);
+            core.setOutput('report', report || '_Nenhuma issue aberta_');
+            return withoutPr.length;
+
+      - name: Check stale issues (sem atualização em 30+ dias)
+        id: stale
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const { data: issues } = await github.rest.issues.listForRepo({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              state: 'open',
+              sort: 'updated',
+              direction: 'asc'
+            });
+            const withoutPr = issues.filter(i => !i.pull_request);
+            const thirtyDaysAgo = new Date();
+            thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
+            const staleList = withoutPr.filter(i => new Date(i.updated_at) < thirtyDaysAgo);
+            const staleReport = staleList.map(i => `- #${i.number} [${i.title}](${i.html_url}) - última atualização ${i.updated_at.split('T')[0]}`).join('\n');
+            core.setOutput('count', staleList.length);
+            core.setOutput('report', staleReport || '_Nenhuma issue antiga_');
+            return staleList.length;
+
+      - name: Summary
+        run: |
+          echo "## Resumo de Issues" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "**Issues abertas:** ${{ steps.issues.outputs.count }}" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "### Lista" >> $GITHUB_STEP_SUMMARY
+          echo '${{ steps.issues.outputs.report }}' >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "### Issues sem atualização em 30+ dias: ${{ steps.stale.outputs.count || '0' }}" >> $GITHUB_STEP_SUMMARY
+          echo '${{ steps.stale.outputs.report || "—" }}' >> $GITHUB_STEP_SUMMARY

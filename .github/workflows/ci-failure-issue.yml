@@ -1,0 +1,61 @@
+name: CI Failure → Issue
+
+on:
+  workflow_run:
+    workflows: ["CI"]
+    types:
+      - completed
+    branches: [main, master]
+
+jobs:
+  create-issue:
+    name: Create issue on CI failure
+    runs-on: ubuntu-latest
+    if: ${{ github.event.workflow_run.conclusion == 'failure' }}
+    permissions:
+      issues: write
+    steps:
+      - name: Create issue for CI failure
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const run = context.payload.workflow_run;
+            const runUrl = run.html_url;
+            const headBranch = run.head_branch || run.head_commit?.message?.split('\n')[0] || 'main';
+            const title = `[CI] Falha no pipeline - ${run.run_number}`;
+            const body = `## CI falhou
+
+            **Workflow:** ${run.name}
+            **Branch:** \`${headBranch}\`
+            **Commit:** ${run.head_sha?.slice(0, 7) || 'N/A'}
+            **Executado em:** ${run.run_started_at}
+
+            ### Links
+            - [Ver execução](${runUrl})
+
+            ---
+            _Issue criada automaticamente. Resolva os erros do CI e feche esta issue._`;
+
+            const { data: openIssues } = await github.rest.issues.listForRepo({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              state: 'open'
+            });
+            const existingIssues = openIssues.filter(i => !i.pull_request);
+
+            const alreadyOpen = existingIssues.find(i =>
+              i.title === title || (i.body && i.body.includes(runUrl))
+            );
+            if (alreadyOpen) {
+              console.log('Issue similar já existe:', alreadyOpen.html_url);
+              return;
+            }
+
+            const { data: issue } = await github.rest.issues.create({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              title,
+              body,
+              labels: ['bug']
+            });
+            console.log('Issue criada:', issue.html_url);

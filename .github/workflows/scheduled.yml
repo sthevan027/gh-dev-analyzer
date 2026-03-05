@@ -1,0 +1,33 @@
+name: Scheduled Smoke Test
+
+on:
+  schedule:
+    - cron: '0 12 * * *'
+  workflow_dispatch:
+
+jobs:
+  smoke:
+    name: Smoke Test
+    runs-on: windows-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup PowerShell
+        uses: actions/setup-powershell@v1
+
+      - name: Smoke test
+        shell: pwsh
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          $outputPath = Join-Path $env:RUNNER_TEMP "scheduled-smoke-output.html"
+          ./scripts/analyze-github.ps1 -Username octocat -OutputPath $outputPath
+          if (-not (Test-Path $outputPath)) {
+            throw "Smoke test falhou: arquivo de saída não foi criado"
+          }
+          $content = Get-Content $outputPath -Raw
+          if ($content -notmatch "<!DOCTYPE html>") {
+            throw "Smoke test falhou: saída não é HTML válido"
+          }
+          Write-Host "Smoke test: OK"
