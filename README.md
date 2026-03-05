@@ -17,7 +17,8 @@ gh-dev-analyzer
 │  └─ README.md
 │
 ├─ docs
-│  └─ metrics.md            # Documentação das métricas
+│  ├─ metrics.md            # Documentação das métricas
+│  └─ GETTING_STARTED.md    # Guia de início rápido
 │
 ├─ src
 │  └─ analyzer.ps1          # Módulo de análise (lógica principal)
@@ -25,9 +26,16 @@ gh-dev-analyzer
 ├─ reports                  # Relatórios HTML gerados (padrão)
 │  └─ {username}-{data}.html
 │
+├─ .github
+│  ├─ ISSUE_TEMPLATE/       # Templates para issues
+│  ├─ PULL_REQUEST_TEMPLATE.md
+│  └─ FUNDING.yml
 ├─ README.md
 ├─ LICENSE
 ├─ CONTRIBUTING.md
+├─ CHANGELOG.md
+├─ CODE_OF_CONDUCT.md
+├─ SECURITY.md
 └─ .gitignore
 ```
 
@@ -38,6 +46,11 @@ gh-dev-analyzer
 - Estatísticas de linguagens
 - Insights de atividade
 - Developer score
+
+## Documentação
+
+- [Guia de início rápido](docs/GETTING_STARTED.md) — instalação e primeiro uso
+- [Métricas](docs/metrics.md) — documentação das métricas coletadas
 
 ## Requisitos
 

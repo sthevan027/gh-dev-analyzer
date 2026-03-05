@@ -1,0 +1,6 @@
+blank_issues_enabled: true
+# Substitua OWNER pelo usuário/organização do repositório
+contact_links:
+  - name: Documentação
+    url: https://github.com/OWNER/gh-dev-analyzer#readme
+    about: Consulte o README antes de abrir uma issue

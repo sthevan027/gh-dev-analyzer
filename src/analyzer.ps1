@@ -332,7 +332,7 @@ function Get-AllReposTableHtml {
         $vis = if ($r.private) { '<span class="badge badge-private">privado</span>' } else { '<span class="badge badge-public">público</span>' }
         $lang = if ($r.language) { $r.language } else { "-" }
         $url = "https://github.com/$($r.full_name)"
-        $thead += "<tr><td>$i</td><td><a href='$url' target='_blank'>$($r.name)</a></td><td>$vis</td><td>$($r.stargazers_count)</td><td>$($r.forks_count)</td><td>$lang</td><td>$($r.open_issues_count)</td><td>$($r.default_branch)</td></tr>"
+        $thead += "<tr><td>$i</td><td><a href='$url' target='_blank' rel='noopener noreferrer'>$($r.name)</a></td><td>$vis</td><td>$($r.stargazers_count)</td><td>$($r.forks_count)</td><td>$lang</td><td>$($r.open_issues_count)</td><td>$($r.default_branch)</td></tr>"
         $i++
     }
     return "<table>$thead</tbody></table>"
@@ -396,7 +396,7 @@ function Get-SimpleReposTable {
     foreach ($r in $Repos) {
         $url = "https://github.com/$($r.full_name)"
         $val = $r.$Prop2
-        $thead += "<tr><td><a href='$url' target='_blank'>$($r.name)</a></td><td>$val</td></tr>"
+        $thead += "<tr><td><a href='$url' target='_blank' rel='noopener noreferrer'>$($r.name)</a></td><td>$val</td></tr>"
     }
     return "<table>$thead</tbody></table>"
 }
