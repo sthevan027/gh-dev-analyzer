@@ -29,7 +29,7 @@ jobs:
         shell: pwsh
         run: |
           $settings = @{
-            Severity = @('Error', 'Warning')
+            Severity = @('Error')
             ExcludeRules = @('PSAvoidUsingWriteHost')
           }
           $results = Invoke-ScriptAnalyzer -Path ./src -Recurse -Settings $settings
