@@ -19,7 +19,7 @@ jobs:
         with:
           # Windows pwsh usa Documents/PowerShell/Modules; Linux/macOS usa ~/.local/share/powershell/Modules
           path: ${{ runner.os == 'Windows' && 'C:/Users/runneradmin/Documents/PowerShell/Modules' || '~/.local/share/powershell/Modules' }}
-          key: pwsh-modules-${{ runner.os }}-${{ hashFiles('PSScriptAnalyzerSettings.psd1') }}
+          key: pwsh-modules-${{ runner.os }}-pester5-${{ hashFiles('PSScriptAnalyzerSettings.psd1') }}
 
       - name: Install PSScriptAnalyzer
         shell: pwsh
@@ -31,8 +31,10 @@ jobs:
       - name: Install Pester
         shell: pwsh
         run: |
-          if (-not (Get-Module -ListAvailable Pester)) {
-            Install-Module -Name Pester -Force -Scope CurrentUser -AllowClobber -SkipPublisherCheck
+          # Garante Pester 5+ (testes usam sintaxe Should -Be, Should -Match)
+          $pester = Get-Module -ListAvailable Pester | Sort-Object Version -Descending | Select-Object -First 1
+          if (-not $pester -or [version]$pester.Version -lt [version]"5.0.0") {
+            Install-Module -Name Pester -MinimumVersion 5.0.0 -Force -Scope CurrentUser -AllowClobber -SkipPublisherCheck
           }
 
       - name: Run PSScriptAnalyzer
@@ -56,6 +58,7 @@ jobs:
       - name: Run Pester tests
         shell: pwsh
         run: |
+          Import-Module Pester -MinimumVersion 5.0.0 -Force
           $config = New-PesterConfiguration
           $config.Run.Path = "./tests"
           $config.Run.Exit = $true
