@@ -12,6 +12,8 @@ jobs:
   analyze:
     name: Analyze
     runs-on: ubuntu-latest
+    # CodeQL não suporta PowerShell; repo é 100% PowerShell - permite falha sem bloquear PR
+    continue-on-error: true
     permissions:
       security-events: write
       actions: read
