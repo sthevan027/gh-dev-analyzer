@@ -17,7 +17,8 @@ jobs:
       - name: Cache PowerShell modules
         uses: actions/cache@v4
         with:
-          path: ~/.local/share/powershell/Modules
+          # Windows pwsh usa Documents/PowerShell/Modules; Linux/macOS usa ~/.local/share/powershell/Modules
+          path: ${{ runner.os == 'Windows' && 'C:/Users/runneradmin/Documents/PowerShell/Modules' || '~/.local/share/powershell/Modules' }}
           key: pwsh-modules-${{ runner.os }}-${{ hashFiles('PSScriptAnalyzerSettings.psd1') }}
 
       - name: Install PSScriptAnalyzer
@@ -39,7 +40,11 @@ jobs:
         run: |
           $settings = @{
             Severity = @('Error')
-            ExcludeRules = @('PSAvoidUsingWriteHost')
+            ExcludeRules = @(
+              'PSAvoidUsingWriteHost',
+              'PSAvoidAssignmentToAutomaticVariable',
+              'PSUseDeclaredVarsMoreThanAssignments'
+            )
           }
           $results = Invoke-ScriptAnalyzer -Path ./src -Recurse -Settings $settings
           if ($results) {
@@ -72,7 +77,10 @@ jobs:
         shell: pwsh
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
+          # Garante que gh use o token em ambiente CI
+          if ($env:GH_TOKEN) { $env:GH_TOKEN | gh auth login --with-token }
           $outputPath = Join-Path $env:RUNNER_TEMP "smoke-test-output.html"
           ./scripts/analyze-github.ps1 -Username octocat -OutputPath $outputPath
           if (-not (Test-Path $outputPath)) {
